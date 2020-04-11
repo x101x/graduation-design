@@ -24,12 +24,14 @@ export default {
     }
   },
   methods:{
-    addCart (event){
+    addCart (){
+      // console.log(event);
+      
       if(!this.food.count){
       this.$set(this.food,'count',1)
       }
       else {this.food.count++}
-      this.$emit('add',event.target)
+      // this.$emit('add',event.target)
     },
     decreaseCart(){
       if(this.food){

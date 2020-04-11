@@ -1,6 +1,7 @@
 {
   "errno": 0,
-  "data": [{
+  "data": [
+    {
       "name": "热销榜",
       "type": -1,
       "foods": [{

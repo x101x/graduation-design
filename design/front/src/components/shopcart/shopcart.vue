@@ -1,14 +1,17 @@
 <template>
-  <div>
+  
     <div class="shopcart">
       <div class="content">
       <div class="shang">订单详情</div>
       <div class="zhong">
         <ul>
-          <li v-for="(item,index) in selectFoods" :key="index">
-            <span class="na">{{item.name}}</span>
+          <li v-for="(item,index) in selectFoods" :key="index" v-show="item.count>0">
+            <span class="na" :title=item.name>{{item.name}}</span>
             ￥{{item.price}} 
-            <span class="co">x{{item.count}}</span>
+            <span class="add w" @click="jia">+</span>
+            <span class="co w">{{item.count}}</span>
+            <!-- <control :item='item'></control> -->
+            <span class="inc w" @click="jian">-</span>
           </li>
         </ul>
       </div>
@@ -16,7 +19,7 @@
         <!-- <span class="total"> -->
           总金额： ￥{{totalPrice}}
           <!-- </span> -->
-        <div class="xd" @click="clearn">下单</div>
+        <div class="xd" @click="clear">下单</div>
       </div>
     </div>
       <!-- <div class="content">
@@ -44,11 +47,16 @@
           </div>
       </div> -->
     </div>
-  </div>
+
 </template>
 
 <script>
+// import control from "../control/control"
 export default {
+  // components: {
+  //   control
+  
+  // },
     props:{
         selectFoods:{
             type:Array,
@@ -65,6 +73,7 @@ export default {
             default:0
         }
     },computed: {
+        
         payClass(){
             if(this.totalPrice<this.minPrice){
                 return 'not-enough'
@@ -110,9 +119,17 @@ export default {
     }
   },
    methods: {
-     clearn(){
-       this.selectFoods = [];
-       this.item.count = 0;
+     jia(){
+       this.$emit('jia','')
+        },
+        jian(){
+       
+       this.$emit('jian','')
+       
+        },
+     clear(){
+       this.$emit("cler",'[]')
+      //  this.item.count = 0;
      },
     drop(el) {
       for (let i = 0; i < this.balls.length; i++) {
@@ -169,17 +186,19 @@ export default {
   @import "../../common/stylus/mixin.styl"
 
   .shopcart
-    flex: 0 0 160px;
-    width: 160px;
-    height: 100%
+    flex: 0 0 300px;
+    width: 300px;
+    // height: 100%
     background: #f3f5f7;
     .content
+      overflow scroll
       height 90%
       width 80%
       top 26px
       background-color #fff
       margin 0 auto 
       position relative
+
       // border 1px solid red
       .shang
         width 100%
@@ -187,7 +206,7 @@ export default {
         line-height 36px
         text-align center
       .zhong
-        font-size 12px
+        font-size 16px
         ul
           height 500px
           li
@@ -195,14 +214,32 @@ export default {
             margin-left 2px
             .na
               display inline-block
-              width 60px
+              width 100px
               white-space:nowrap;
               overflow hidden
               text-overflow:ellipsis; 
-            .co
-              float right
-              right 5px
+              // cursor: pointer;
+              cursor pointer
+              // &:hover
+              //   width auto
+            .w  
+              display inline-block
               position relative
+              float right
+            .add 
+              right 50px
+              font-size 20px
+            .co
+              font-size 20px
+              right 20px
+            .inc 
+              font-size 20px
+              right -10px
+              // line-height 20px
+              // text-align center
+              // float right
+              // right 5px
+              // position relative
       .you
         // position absolute
         height 40px

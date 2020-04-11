@@ -1,34 +1,40 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <v-header :seller='seller'></v-header>
+    <!-- <v-header :seller='seller'></v-header> -->
     <!-- <div class="tab boeder-1px">
       <div class="tab-item">
-        <router-link to="/goods">商品</router-link>
-      </div>
-      <div class="tab-item">
+        <router-link to="/">商品</router-link>
+      </div> -->
+      <!-- <div class="tab-item">
         <router-link to="/ratings">评论</router-link>
       </div>
       <div class="tab-item">
         <router-link to="/seller">商家</router-link>
-      </div>
-    </div> -->
-    <router-view :seller='seller'/>
+      </div> -->
+    <!-- </div> -->
+    <!-- <router-link to = '/'></router-link> -->
+    <!-- <goods /> -->
+    <router-view />
+    <!-- <router-view :seller='seller'/> -->
   </div>
 </template>
 
 <script>
-import  header from '@/components/header/Header.vue'
+// import  header from '@/components/header/Header.vue'
+import  goods from '@/components/goods/goods.vue'
+import  login from '@/components/login/login.vue'
 
 export default {
   name: 'App',
   data () {
     return{
-      seller:{}
+      // seller:{}
     }
   },
   components:{
-    'v-header':header
+    // 'v-header':header,
+    goods,login
   },
   created(){
     this.$http.get('http://localhost:8080/static/seller.json')

@@ -12,6 +12,17 @@ const users = require('./routes/users')
 // error handler
 onerror(app)
 
+//跨域
+ app.use(async (ctx, next)=> {
+  ctx.set('Access-Control-Allow-Origin', '*');
+  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+  ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+  if (ctx.method == 'OPTIONS') {
+    ctx.body = 200; 
+  } else {
+    await next();
+  }
+});
 // middlewares
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -33,13 +44,14 @@ app.use(async (ctx, next) => {
 })
 
 
-// app.all('*', function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
-//   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-//   res.header("X-Powered-By", ' 3.2.1')
-//   res.header("Content-Type", "application/json;charset=utf-8");
-//   next();
+// app.all('*', function(req, res, next) {
+// res.header("Access-Control-Allow-Origin", "*");
+// res.header("Access-Control-Allow-Headers", "X-Requested-With");
+// res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+// res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+// res.header("X-Powered-By",' 3.2.1')
+// res.header("Content-Type", "application/json;charset=utf-8");
+// next();
 // });
 
 

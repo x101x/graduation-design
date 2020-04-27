@@ -3,6 +3,11 @@
     <div class="top">
       <span class="gg">桌号：{{ this.$route.query.znum}}</span>
       <span class="gg g">就餐人数：{{ this.$route.query.pnum}}</span>
+      <span
+        class="gg ph"
+        v-show="this.$route.query.phone"
+        :title="this.$route.query.phone"
+      >会员{{ this.$route.query.phone}}</span>
       <span class="gg exit" @click="exit">退出</span>
     </div>
     <div class="goods">
@@ -54,15 +59,22 @@
       </div>
       <!-- 购物车 -->
       <!-- <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"> -->
-      <shopcart ref="shopcart" :selectFoods="selectFoods" v-on:cler="clearn" v-on:jia="add" v-on:jian="inc"></shopcart>
+      <shopcart
+        ref="shopcart"
+        :selectFoods="selectFoods"
+        v-on:cler="clearn"
+        v-on:jia="add"
+        v-on:jian="inc"
+      ></shopcart>
     </div>
   </div>
 </template>
 
 <script>
-import BScroll from 'better-scroll'
-import cartcontrol from '@/components/cartcontrol/cartcontrol'
-import shopcart from '@/components/shopcart/shopcart'
+import BScroll from "better-scroll";
+import cartcontrol from "@/components/cartcontrol/cartcontrol";
+import shopcart from "@/components/shopcart/shopcart";
+import bus from "../event-bus/bus.js";
 
 export default {
   // props:{
@@ -70,53 +82,62 @@ export default {
   //     type:Object
   //   }
   // },
-  data () {
+  data() {
     return {
       goods: [],
       classMap: [],
       listHeight: [],
       scrollY: 0,
-      ddxq: []
-    }
+      ddxq: [],
+      znum: "",
+      pnum: "",
+      phone: ""
+    };
   },
-  created () {
-     console.log(this.$route.query),
-    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-    this.$http.get('http://localhost:8080/static/goods.json')
-      .then(res => {
-        console.log(res)
-        if (res.data.errno === 0) {
-          this.goods = res.data.data
-          this.$nextTick(() => { // 页面渲染完成才会执行
-            this._initScroll()
-            this._calculateHeight()
-          })
-        }
-      })
+  created() {
+    //  console.log('::'+this.$route.query.znum),
+    this.znum = this.$route.query.znum;
+    this.pnum = this.$route.query.pnum;
+    this.phone = this.$route.query.phone;
+    // console.log(this.ddxq,this.znum,this.pnum,this.phone);
+
+    this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
+    this.$http.get("http://localhost:8080/static/goods.json").then(res => {
+      console.log(res);
+      if (res.data.errno === 0) {
+        this.goods = res.data.data;
+        this.$nextTick(() => {
+          // 页面渲染完成才会执行
+          this._initScroll();
+          this._calculateHeight();
+        });
+      }
+    });
   },
+
   computed: {
-    currentIndex () {
+    currentIndex() {
       for (let i = 0; i < this.listHeight.length; i++) {
-        let height1 = this.listHeight[i]
-        let height2 = this.listHeight[i + 1]
+        let height1 = this.listHeight[i];
+        let height2 = this.listHeight[i + 1];
         if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
-          return i
+          return i;
         }
       }
-      return 0
+      return 0;
     },
-    selectFoods(){
-      let foods=[]
-      this.goods.forEach((good)=>{
-        good.foods.forEach((food)=>{
-          if(food.count){
-            foods.push(food)
+    selectFoods() {
+      let foods = [];
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food);
           }
-        })
-      })
+        });
+      });
       // console.log("slelct:" + foods);
-      
-      return foods
+
+      return foods;
     }
   },
   components: {
@@ -124,83 +145,88 @@ export default {
     shopcart
   },
   methods: {
-    _initScroll () {
-      this.menuScroll = new BScroll(this.$refs.menuWrapper, {click: true})
-      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {click: true, probeType: 3})
-      this.foodsScroll.on('scroll', pos => {
-        // console.log(pos)
-        this.scrollY = Math.abs(Math.round(pos.y))
-      })
-    },
-    selectMenu (index, event) {
-      // this.currentIndex = index
-      let foodList = this.$refs.foodList
-      let el = foodList[index]
-      // console.log(el);
+    sendData() {
+      console.log(this.ddxq, this.znum, this.pnum, this.phone);
       
-      this.foodsScroll.scrollToElement(el, 300)
+      bus.$emit("recive", this.ddxq, this.znum, this.pnum, this.phone);
     },
-    _calculateHeight () {
-      let foodList = this.$refs.foodList
-      let height = 0
-      this.listHeight.push(height)
+    _initScroll() {
+      this.menuScroll = new BScroll(this.$refs.menuWrapper, { click: true });
+      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        click: true,
+        probeType: 3
+      });
+      this.foodsScroll.on("scroll", pos => {
+        // console.log(pos)
+        this.scrollY = Math.abs(Math.round(pos.y));
+      });
+    },
+    selectMenu(index, event) {
+      // this.currentIndex = index
+      let foodList = this.$refs.foodList;
+      let el = foodList[index];
+      // console.log(el);
+
+      this.foodsScroll.scrollToElement(el, 300);
+    },
+    _calculateHeight() {
+      let foodList = this.$refs.foodList;
+      let height = 0;
+      this.listHeight.push(height);
       for (let i = 0; i < foodList.length; i++) {
-        let item = foodList[i]
-        height += item.clientHeight
-        this.listHeight.push(height)
+        let item = foodList[i];
+        height += item.clientHeight;
+        this.listHeight.push(height);
       }
     },
-    clearn(el){
-      // console.log(1);
-      // let dingdan = this.sllectFoods;
-      // console.log(dingdan);
-            this.ddxq=[];
-      
-      this.goods.forEach((good)=>{
-        good.foods.forEach((food)=>{
-          if(food.count){
+    //   updated () {
+    //   this.sendData()
+    // },
+    clearn(el) {
+      this.ddxq = [];
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
             let fd = JSON.parse(JSON.stringify(food));
-            this.ddxq.push(fd)
-            food.count = 0;
-           
-            // return aa
+            this.ddxq.push(fd);
+            food.count = 0; this.sendData();
           }
-         
-        })
-        })
-        console.log(this.ddxq);
-        
-        // return this.goods
-      // console.log(this.foods);
+        });
+      });
+      
+      // console.log(this.ddxq,this.nnum,this.$route.query.nnum);
+
+      // return this.goods
+      // console.log(this.ddxq);
       // return this.goods;
       // return this.foods = el
-    
+      // this.$router.push({path:'/order'})
+      // )
     },
-    add(){
-      this.goods.forEach((good)=>{
-        good.foods.forEach((food)=>{
-          console.log(food);
-          
-          if(food.count){
-            food.count ++;
+    add() {
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          // console.log(food);
+
+          if (food.count) {
+            food.count++;
           }
-          
-        })
-        })
-    },inc(){
-      this.goods.forEach((good)=>{
-        good.foods.forEach((food)=>{
-          if(food.count>0){ 
-            food.count--
-          }
-          
-        })
-        })
+        });
+      });
     },
-    exit(){
+    inc() {
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count > 0) {
+            food.count--;
+          }
+        });
+      });
+    },
+    exit() {
       this.$router.push({
-        path:'/'
-      })
+        path: "/"
+      });
     }
     // addFood(target){
     //   console.log(target);
@@ -212,24 +238,42 @@ export default {
     //   })
     // }
   }
-}
+};
 </script>
 
 <style lang="stylus" scoped>
 @import '../../common/stylus/mixin.styl';
-.top
+
+.top {
   // position relative
-  font-size 20px
-  .gg
-    display inline-block
+  font-size: 20px;
+
+  .gg {
+    display: inline-block;
     position: absolute;
-    top 20px
-    left 10px
-  .g  
-    left 110px
-  .exit
-    left 90%
+    top: 20px;
+    left: 10px;
+  }
+
+  .ph {
+    left: 240px;
+    // width 70px
+    white-space: nowrap;
+    // overflow hidden
+    // text-overflow ellipsis
+  }
+
+  .g {
+    left: 110px;
+  }
+
+  .exit {
+    left: 90%;
+    white-space: nowrap;
     // margin-left 5px
+  }
+}
+
 .goods {
   display: flex;
   position: absolute;

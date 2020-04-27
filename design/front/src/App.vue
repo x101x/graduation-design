@@ -24,6 +24,8 @@
 // import  header from '@/components/header/Header.vue'
 import  goods from '@/components/goods/goods.vue'
 import  login from '@/components/login/login.vue'
+import  order from '@/components/order/order.vue'
+import  admin from '@/components/admin/admin.vue'
 
 export default {
   name: 'App',
@@ -34,17 +36,17 @@ export default {
   },
   components:{
     // 'v-header':header,
-    goods,login
-  },
-  created(){
-    this.$http.get('http://localhost:8080/static/seller.json')
-    .then(res=>{
-      console.log(res);
-      if(res.data.errno===0){
-        this.seller = Object.assign({},this.seller,res.data.data)//?
-      }
-    })
+    goods,login,order,admin
   }
+  // created(){
+  //   this.$http.get('http://localhost:8080/static/seller.json')
+  //   .then(res=>{
+  //     console.log(res);
+  //     if(res.data.errno===0){
+  //       this.seller = Object.assign({},this.seller,res.data.data)//?
+  //     }
+  //   })
+  // }
 }
 </script>
 

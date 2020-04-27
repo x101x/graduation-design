@@ -7,8 +7,9 @@
             <p class="zh xia">人数: <input type="text" v-model="pnum" placeholder="请输入人数" /></p>
             <!-- <input type="submit" value="点餐" /> -->
           <!-- </form> -->
-          <div class="f login" @click="log">注册/登入</div>
-          <div class="f order" @click="order">直接点餐</div>
+          <div class="f login" @click="log" v-show="!this.bb">注册/登入</div>
+          <div class="f login" @click="log" v-show="this.bb">登入成功</div>
+          <div class="f order" @click="order">点餐</div>
         </div>
         <div class="box1 " v-show="this.xianshi">
               <p><input type="text" class="aaa" v-model="phone" placeholder="请输入手机号" ></p>
@@ -28,13 +29,14 @@ export default {
           pnum:'',
           xianshi:false,
           aa:true,
+          bb:false,
           phone:''
         }
     },
     methods:{
       login(){
         if(this.phone.trim()=='') {
-          alert('账号或密码不能为空')
+          alert('请输入手机号')
           return
         } 
         else if(!(/^1[3456789]\d{9}$/.test(this.phone.trim()))){
@@ -51,9 +53,13 @@ export default {
         console.log(res)
         if(res.data.code == '800000') {
           sessionStorage.setItem('userInfo',JSON.stringify(res.data.data) )
-          this.$router.push({path:'/goods'})
+          // this.$router.push({path:'/goods'})
+          this.xianshi = !this.xianshi
+        this.aa = !this.aa
+          this.bb = !this.bb
         } else {
-          this.$toast(res.data.mess)
+          // alert(res.data.mess)
+          alert(res.data.mess)
         }
       }).catch((err)=>{
         console.log(err);
@@ -80,7 +86,8 @@ export default {
             path: '/goods',
             query:{
               znum:this.znum,
-              pnum:this.pnum
+              pnum:this.pnum,
+              phone:this.phone
             } 
           })
         }

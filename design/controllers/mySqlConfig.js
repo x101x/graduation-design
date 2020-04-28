@@ -63,6 +63,12 @@ let delectFoods = function (id) {
   return _sql
 }
 
+//修改菜品
+let updateFoods = function(id,value){
+  let _sql = allServies.query(`update foods set  name=?,price=?,oldPrice=?,sellCount=?,description=?,type=?,icon=? where id=${id};`,value)
+  return _sql
+}
+
 let dat = function () {
   let rxb = allServies.query(`select * from foods where sellCount > 80`)
   let drtc = allServies.query(`select * from foods where type = 1`)
@@ -110,6 +116,12 @@ let userLogin = function (phone) {
   return allServies.query(_sql)
 }
 
+//管理员登录
+let adminLogin = function (number,password) {
+  let _sql = `select * from admin where number ="${number}" and password = "${password}";`
+  return allServies.query(_sql)
+}
+
 // 根据分类名称查找对应的笔记列表
 // let findNoteListByType = function (note_type) {
 //   let _sql = `select * from note where note_type ="${note_type}";`
@@ -128,7 +140,7 @@ module.exports = {
   userLogin,
   findUser,
   getAllFoods,
-  dat,insertFoods,delectFoods
+  dat,insertFoods,delectFoods,updateFoods,adminLogin
   // findNoteListByType,
   // findNoteDetailById
 }

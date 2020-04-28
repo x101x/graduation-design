@@ -46,18 +46,46 @@ router.get('/hot', async (ctx, next) => {
   // ]
 
 })
+
+router.post('/adminLogin',async(ctx,next)=>{
+  var _number =  ctx.request.body.number
+  var _password =  ctx.request.body.password
+  await userService.adminLogin(_number,_password)
+  .then((res)=>{
+    console.log(res);
+    let r = '';
+    if (res.length) {
+      r = 'ok'
+      let result = {
+        id: res[0].id,
+        number: res[0].number,
+        password: res[0].password
+      }
+      ctx.body = {
+        code: '800000',
+        data: result,
+        mess: '登陆成功'
+      }
+    }else {
+      r = 'error'
+      ctx.body = {
+        code: '800004',
+        data: r,
+        mess: '账号密码错误'
+      }
+    }
+  }).catch((err) => {
+    ctx.body = {
+      code: '800002',
+      data: err
+    }
+  
+  })
+})
+
 router.post('/foodsInsert', async (ctx, next) => {
-  // id=?,name=?,,price=?,oldPrice=?,
-  // sellCount=?,description=?,type=?,icon=?
+
   var form = ctx.request.body.form
-  // var id = ctx.request.body.from.id
-  // var name = ctx.request.body.from.name
-  // var price = ctx.request.body.from.price
-  // var oldPrice = ctx.request.body.from.oldPrice
-  // var sellCount = ctx.request.body.from.sellCount
-  // var description = ctx.request.body.from.description
-  // var type = ctx.request.body.from.type
-  // var icon = ctx.request.body.from.icon
   await userService.insertFoods( [form.name,form.price,form.oldPrice,form.sellCount,form.description,form.type,form.icon])
     .then((res) => {
       console.log(res);
@@ -95,6 +123,35 @@ router.post('/foodsInsert', async (ctx, next) => {
       }
     })
 
+})
+
+router.patch('/foodsUpdate',async (ctx, next) => {
+  var row = ctx.request.body.row
+  await userService.updateFoods(row.id,[row.name,row.price,row.oldPrice,row.sellCount,row.description,row.type,row.icon])
+  .then((res)=>{
+    console.log(res);
+    let r = ''
+      if (res.affectedRows > 0) {
+        r = 'ok';
+        ctx.body = {
+          code: '800000',
+          data: r,
+          mess: '操作成功'
+        }}
+  else {
+    r = 'error'
+    ctx.body = {
+      code: '800004',
+      data: r,
+      mess: '失败了'
+    }
+  }
+}).catch((err) => {
+  ctx.body = {
+    code: '800002',
+    data: err
+  }
+})
 })
 
 router.delete('/foodsDelect', async (ctx, next) => {

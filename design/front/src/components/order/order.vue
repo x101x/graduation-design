@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import bus from '../event-bus/bus.js'
+
 export default {
     data(){
         return {

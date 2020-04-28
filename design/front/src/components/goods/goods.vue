@@ -66,6 +66,19 @@
         v-on:jia="add"
         v-on:jian="inc"
       ></shopcart>
+      <div class="peisong" @click="peisong">配送详情</div>
+      <div class="orders" v-show="this.show">
+        <span>配送详情</span>
+        <el-divider></el-divider>
+        <div class="check" v-for="(item,index) in this.ddxq" :key="index">
+          <input  type="checkbox">
+          <span>{{item.name}}  x{{item.count}}</span>
+        </div>
+        <div class="footer">
+          <div class="finish" @click="finish">配送完成</div>
+          <div class="finish" @click="fanhui">返回</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -74,7 +87,7 @@
 import BScroll from "better-scroll";
 import cartcontrol from "@/components/cartcontrol/cartcontrol";
 import shopcart from "@/components/shopcart/shopcart";
-import bus from "../event-bus/bus.js";
+// import bus from "../event-bus/bus.js";
 
 export default {
   // props:{
@@ -91,7 +104,9 @@ export default {
       ddxq: [],
       znum: "",
       pnum: "",
-      phone: ""
+      phone: "",
+      date:'',
+      show:false
     };
   },
   created() {
@@ -103,7 +118,7 @@ export default {
 
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
     this.$http.get("http://localhost:8080/static/goods.json").then(res => {
-      console.log(res);
+      // console.log(res);
       if (res.data.errno === 0) {
         this.goods = res.data.data;
         this.$nextTick(() => {
@@ -145,11 +160,11 @@ export default {
     shopcart
   },
   methods: {
-    sendData() {
-      console.log(this.ddxq, this.znum, this.pnum, this.phone);
+    // sendData() {
+    //   console.log(this.ddxq, this.znum, this.pnum, this.phone);
       
-      bus.$emit("recive", this.ddxq, this.znum, this.pnum, this.phone);
-    },
+    //   bus.$emit("recive", this.ddxq, this.znum, this.pnum, this.phone);
+    // },
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, { click: true });
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
@@ -183,18 +198,26 @@ export default {
     //   this.sendData()
     // },
     clearn(el) {
-      this.ddxq = [];
+      //  let xq = [];
+      // let date = new Date();
+      // let da = JSON.parse(JSON.stringify(date))
+      // this.ddxq.push(date)
       this.goods.forEach(good => {
         good.foods.forEach(food => {
           if (food.count) {
-            let fd = JSON.parse(JSON.stringify(food));
-            this.ddxq.push(fd);
-            food.count = 0; this.sendData();
+            let fd = JSON.parse(JSON.stringify(food));                 
+           this.ddxq.push(fd)
+            
+          // this.data = date;
+            food.count = 0; 
+            // this.sendData();
+            // return xq
           }
         });
       });
-      
-      // console.log(this.ddxq,this.nnum,this.$route.query.nnum);
+      // this.ddxq = JSON.parse(JSON.stringify(xq)); 
+      console.log(this.ddxq);
+      // console.log(date);
 
       // return this.goods
       // console.log(this.ddxq);
@@ -202,6 +225,7 @@ export default {
       // return this.foods = el
       // this.$router.push({path:'/order'})
       // )
+      
     },
     add() {
       this.goods.forEach(good => {
@@ -227,6 +251,20 @@ export default {
       this.$router.push({
         path: "/"
       });
+    },
+    peisong(){
+      this.show=!this.show
+    },
+    fanhui(){
+      this.show=!this.show
+    },
+    finish(){
+      let mes =confirm('确认完成配送?')
+      if(mes==true){
+        this.ddxq=[];
+      this.show=!this.show
+      }
+      
     }
     // addFood(target){
     //   console.log(target);
@@ -426,5 +464,49 @@ export default {
       }
     }
   }
+  .peisong{
+    position absolute
+    width 120px
+    height 33px
+    background-color red
+    right 90px
+    top 580px
+    background-color #DCDFE6
+    text-align center
+    line-height 33px
+  }
+  .orders{
+    width 300px
+    height 700px
+    background-color  #f3f5f7
+    position absolute
+    z-index 99
+    right 0
+    padding 10px
+    box-sizing border-box
+    font-size 20px
+    
+  }
+  .footer{
+    position absolute
+    display table
+    width 280px
+    height 100px
+    // background-color red
+    bottom 20px
+    padding 20px
+    box-sizing border-box
+    text-align center
+    border-spacing 8px
+
+    .finish{
+      display table-cell
+      vertical-align middle
+      width 70px
+      background-color #DCDFE6
+
+    }
+  }
+
 }
 </style>

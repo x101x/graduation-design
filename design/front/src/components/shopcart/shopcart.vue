@@ -208,7 +208,7 @@ export default {
       .zhong
         font-size 16px
         ul
-          height 500px
+          height 450px
           li
             margin-top 5px
             margin-left 2px
@@ -254,14 +254,15 @@ export default {
         .xd
           // display inline-block  
           position relative
-          top 5px
-          width 80%
-          margin 0 auto
-          height 25px
-          background-color red
+          // top 5px
+          width 50%
+          margin 3px auto
+          height 30px
+          background-color #DCDFE6
           // text-align center
-          line-height 27px
-
+          line-height 30px
+          &:hover
+            background-color #E4E7ED
   //   .content
   //     display: flex
   //     background: #141d27

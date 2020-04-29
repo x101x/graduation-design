@@ -66,13 +66,23 @@
         v-on:jia="add"
         v-on:jian="inc"
       ></shopcart>
+      <div class="yidian peisong" @click="yid" >已点</div>
+      <div class="yd" v-show="this.yidian">
+        <span>已点订单</span>
+        <el-divider></el-divider>
+        <div class='yg' v-for="(item,index) in this.yddd" :key="index">
+        <span class='sp'>{{item.name}}  ￥{{item.price}}  x{{item.count}}</span></div>
+        <el-divider></el-divider>
+        总价：￥{{totalPrice}}
+      </div>
+
       <div class="peisong" @click="peisong">配送详情</div>
       <div class="orders" v-show="this.show">
         <span>配送详情</span>
         <el-divider></el-divider>
         <div class="check" v-for="(item,index) in this.ddxq" :key="index">
           <input  type="checkbox">
-          <span>{{item.name}}  x{{item.count}}</span>
+          <span >{{item.name}}  x{{item.count}}</span>
         </div>
         <div class="footer">
           <div class="finish" @click="finish">配送完成</div>
@@ -102,11 +112,14 @@ export default {
       listHeight: [],
       scrollY: 0,
       ddxq: [],
+      yddd:[],
       znum: "",
       pnum: "",
       phone: "",
       date:'',
-      show:false
+      show:false,
+      yidian:false,
+      // totalPrice:0,
     };
   },
   created() {
@@ -153,7 +166,13 @@ export default {
       // console.log("slelct:" + foods);
 
       return foods;
-    }
+    },totalPrice(){
+            let total = 0;
+            this.yddd.forEach((food) => {
+                total += food.price*food.count
+            });
+            return total
+        },
   },
   components: {
     cartcontrol,
@@ -199,33 +218,23 @@ export default {
     // },
     clearn(el) {
       //  let xq = [];
+      // this.ddxq=[]
       // let date = new Date();
       // let da = JSON.parse(JSON.stringify(date))
       // this.ddxq.push(date)
+      let mes = confirm('确认下单?')
+      if(mes == true){
       this.goods.forEach(good => {
         good.foods.forEach(food => {
           if (food.count) {
             let fd = JSON.parse(JSON.stringify(food));                 
            this.ddxq.push(fd)
-            
-          // this.data = date;
             food.count = 0; 
-            // this.sendData();
-            // return xq
           }
         });
-      });
-      // this.ddxq = JSON.parse(JSON.stringify(xq)); 
+      });}
       console.log(this.ddxq);
-      // console.log(date);
-
-      // return this.goods
-      // console.log(this.ddxq);
-      // return this.goods;
-      // return this.foods = el
-      // this.$router.push({path:'/order'})
-      // )
-      
+      this.yddd = JSON.parse(JSON.stringify(this.ddxq)); 
     },
     add() {
       this.goods.forEach(good => {
@@ -257,6 +266,9 @@ export default {
     },
     fanhui(){
       this.show=!this.show
+    },
+    yid(){
+      this.yidian=!this.yidian
     },
     finish(){
       let mes =confirm('确认完成配送?')
@@ -470,10 +482,30 @@ export default {
     height 33px
     background-color red
     right 90px
-    top 580px
+    top 610px
     background-color #DCDFE6
     text-align center
     line-height 33px
+  }
+  .yidian{
+    top 570px
+  }
+  .yd{
+
+    position absolute
+    z-index 9
+    top 25px
+    right 30px
+    height 480px
+    width 240px
+    background-color #DCDFE6
+    padding 10px
+    font-size 20px
+    box-sizing border-box
+  }
+  .sp{
+    display block
+    margin-bottom 5px
   }
   .orders{
     width 300px

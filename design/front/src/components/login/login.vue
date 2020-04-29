@@ -14,10 +14,10 @@
       </el-form>
       <!-- <el-row> -->
       <div class="but">
-        <el-button type="warning" plain @click="log" v-show="!this.bb">注册/登入</el-button>
-        <el-button type="warning" plain @click="log" v-show="this.bb">登陆成功</el-button>
+        <el-button type="warning" plain @click="log" v-show="!this.bb">注册/登录</el-button>
+        <el-button type="warning" plain @click="log" v-show="this.bb">登录成功</el-button>
         <el-button type="warning" plain @click="order">点我点单</el-button>
-        <el-button type="warning" plain @click="admin"> 管理员登入</el-button>
+        <el-button type="warning" plain @click="admin"> 管理员登录</el-button>
         
         <!-- <el-button type="danger" plain>危险按钮</el-button> -->
       </div>
@@ -37,7 +37,7 @@
         </el-form-item>
       </el-form>
       <div class="bbb">
-      <el-button type="warning" plain @click="adminLogin" >登陆</el-button>
+      <el-button type="warning" plain @click="adminLogin" >登录</el-button>
       <el-button type="warning" plain @click="unlogin2" >取消</el-button>
       </div>
     </div>
@@ -47,7 +47,7 @@
       </p> -->
       <el-input v-model="phone" placeholder="请输入手机号"></el-input>
       <div class="aaa">
-      <el-button type="warning" plain @click="login" >登陆</el-button>
+      <el-button type="warning" plain @click="login" >登录</el-button>
       <el-button type="warning" plain @click="unlogin" >取消</el-button>
       </div>
       <!-- <div class="bbb" @click="login">登入</div> -->

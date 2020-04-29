@@ -20,6 +20,7 @@
           总金额： ￥{{totalPrice}}
           <!-- </span> -->
         <div class="xd" @click="clear">下单</div>
+        <!-- <div class="xd" @click="clear">已点</div> -->
       </div>
     </div>
       <!-- <div class="content">
